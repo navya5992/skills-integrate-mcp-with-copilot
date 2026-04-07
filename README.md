@@ -16,13 +16,47 @@ A card-based memory game where players flip cards to find matching pairs. The pr
 |-------|--------|------|--------------|
 | **Stage 1** | ✅ Complete | Console | `python src/play_console_game.py` |
 | **Stage 2** | ✅ Complete | Desktop (Tkinter) | `python src/play_desktop_game.py` |
-| **Stage 3** | 🚀 Coming | Web (Flask) | TBD |
+| **Stage 3** | ✅ Complete | Web (Flask) | `python src/web_backend.py` |
 
 ### **📚 Documentation**
 
 - [PROJECT_STATUS.md](PROJECT_STATUS.md) — Overall project overview
 - [MEMORY_GAME_README.md](MEMORY_GAME_README.md) — Stage 1 (Console) guide
 - [DESKTOP_GAME_README.md](DESKTOP_GAME_README.md) — Stage 2 (Desktop) guide
+- [WEB_APP_README.md](WEB_APP_README.md) — Stage 3 (Web) guide
+
+---
+
+## ✅ Daily To-Do List Desktop App
+
+A modern desktop application for managing daily tasks with checkboxes for completion tracking.
+
+### **Features**
+- ➕ Add tasks for the day
+- ☑️ Check/uncheck completion status
+- 💾 Auto-save to JSON file
+- 📊 Progress tracking with visual bar
+- 🗑️ Clear completed tasks
+- 📂 Import/export task lists
+
+### **Run the App**
+```bash
+# From project root
+python run_todo_app.py
+
+# Or directly
+python src/todo_desktop_app.py
+```
+
+### **Documentation**
+- [TODO_APP_README.md](TODO_APP_README.md) — Complete guide and screenshots
+
+### **Test the App** (Headless)
+```bash
+python test_todo_app.py
+```
+
+---
 
 ### **🚀 Quick Start**
 

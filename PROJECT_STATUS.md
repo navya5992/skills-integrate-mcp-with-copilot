@@ -12,7 +12,7 @@ Memory Match Arena is being built across three progressive stages, with **strict
 |-------|--------|----------|-------|
 | **Stage 1: Console** | ✅ Complete | Text-based game, core engine | 6 files |
 | **Stage 2: Desktop** | ✅ Complete | Tkinter GUI, click-based | 8 files |
-| **Stage 3: Web** | 🚀 Coming Soon | Flask backend + Web UI | TBD |
+| **Stage 3: Web** | ✅ Complete | Flask backend + Web UI | 8 files |
 
 ---
 

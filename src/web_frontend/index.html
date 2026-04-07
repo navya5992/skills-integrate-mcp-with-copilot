@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Memory Match Arena</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Title -->
+        <div class="title">
+            <h1>🎮 MEMORY MATCH ARENA 🎮</h1>
+            <p>Find matching country pairs!</p>
+
+            <!-- QR Code Section -->
+            <div class="qr-section">
+                <h3>📱 Share this game:</h3>
+                <img id="qrCode" src="/static/game_qr.png" alt="QR Code for Memory Match Arena" class="qr-image">
+                <p class="qr-text">
+                    <strong>Desktop:</strong> <a id="desktopLink" href="#" target="_blank">Loading...</a>
+                </p>
+                <p class="qr-text">
+                    <strong>📱 Mobile:</strong> <a id="mobileLink" href="#" target="_blank">Loading...</a>
+                </p>
+                <div id="mobileInstructions" class="mobile-instructions" style="display: none;">
+                    <h4>📋 Mobile Access Instructions:</h4>
+                    <pre id="instructionsText"></pre>
+                </div>
+                <a href="/static/game_qr.png" download="memory-match-arena-qr.png" class="btn btn-secondary btn-small">📥 Download QR Code</a>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection Screen -->
+        <div id="difficultyScreen" class="screen active">
+            <div class="difficulty-box">
+                <h2>Select Difficulty</h2>
+                
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="difficulty" value="4" checked>
+                        <span class="radio-custom"></span>
+                        <span class="radio-text">🟢 Easy: 4×4 Grid (8 pairs)</span>
+                    </label>
+                </div>
+
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="difficulty" value="6">
+                        <span class="radio-custom"></span>
+                        <span class="radio-text">🟡 Medium: 6×6 Grid (18 pairs)</span>
+                    </label>
+                </div>
+
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="difficulty" value="8">
+                        <span class="radio-custom"></span>
+                        <span class="radio-text">🔴 Hard: 8×8 Grid (32 pairs)</span>
+                    </label>
+                </div>
+
+                <button id="startBtn" class="btn btn-primary btn-large">Start Game</button>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Grid:</span>
+                    <span id="gridSize" class="stat-value">4×4</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Pairs:</span>
+                    <span id="pairsCount" class="stat-value">0/8</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Moves:</span>
+                    <span id="movesCount" class="stat-value">0</span>
+                </div>
+            </div>
+
+            <!-- Game Grid -->
+            <div id="gameGrid" class="game-grid"></div>
+
+            <!-- Message -->
+            <div id="message" class="message"></div>
+
+            <!-- Buttons -->
+            <div class="buttons">
+                <button id="newGameBtn" class="btn btn-secondary">New Game</button>
+                <button id="quitBtn" class="btn btn-danger">Quit</button>
+            </div>
+        </div>
+
+        <!-- Win Screen -->
+        <div id="winScreen" class="screen">
+            <div class="win-box">
+                <h2>🎉 CONGRATULATIONS! YOU WON! 🎉</h2>
+                
+                <div class="win-stats">
+                    <div class="win-stat">
+                        <span class="win-label">Grid Size:</span>
+                        <span id="winGridSize" class="win-value">4×4</span>
+                    </div>
+                    <div class="win-stat">
+                        <span class="win-label">Total Moves:</span>
+                        <span id="winMoves" class="win-value">0</span>
+                    </div>
+                    <div class="win-stat">
+                        <span class="win-label">Pairs Found:</span>
+                        <span id="winPairs" class="win-value">8/8</span>
+                    </div>
+                </div>
+
+                <p class="win-message">Great job! 🌟</p>
+
+                <div class="win-buttons">
+                    <button id="playAgainBtn" class="btn btn-primary btn-large">Play Again</button>
+                    <button id="quitWinBtn" class="btn btn-secondary">Quit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Fetch server info for mobile/network access
+            fetch('/api/server-info')
+                .then(response => response.json())
+                .then(data => {
+                    const desktopLink = document.getElementById('desktopLink');
+                    const mobileLink = document.getElementById('mobileLink');
+                    const instructionsDiv = document.getElementById('mobileInstructions');
+                    const instructionsText = document.getElementById('instructionsText');
+                    
+                    if (desktopLink) {
+                        desktopLink.href = data.localhost_url;
+                        desktopLink.textContent = data.localhost_url;
+                    }
+                    
+                    if (mobileLink) {
+                        mobileLink.href = data.recommended_mobile_url;
+                        mobileLink.textContent = data.recommended_mobile_url;
+                    }
+                    
+                    if (data.mobile_instructions && data.in_dev_container) {
+                        instructionsText.textContent = data.mobile_instructions;
+                        instructionsDiv.style.display = 'block';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching server info:', err);
+                    document.getElementById('desktopLink').textContent = 'http://localhost:5000';
+                    document.getElementById('mobileLink').textContent = 'Open on mobile';
+                });
+        });
+    </script>
+</body>
+</html>

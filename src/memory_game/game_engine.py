@@ -26,8 +26,11 @@ class InvalidMoveError(Exception):
 @dataclass
 class Card:
     """Represents a single card in the game grid."""
-    country: str  # Country name
-    flag: str     # Flag emoji
+    country: str        # Country name
+    flag: str           # Flag emoji
+    country_code: str   # ISO country code (e.g., 'us', 'ca')
+    flag_image_url: str # URL to flag image
+    display_type: str   # 'name' or 'flag' - what to display
     is_flipped: bool = False
     is_matched: bool = False
 
@@ -65,13 +68,13 @@ class FlipResult:
 class GameGrid:
     """Manages the game grid, shuffling, and card access."""
 
-    def __init__(self, size: int, card_pairs: List[Tuple[str, str]]):
+    def __init__(self, size: int, card_pairs: List[Tuple[str, str, str, str]]):
         """
         Initialize game grid.
 
         Args:
             size: Grid size (4 for 4x4, 6 for 6x6, 8 for 8x8)
-            card_pairs: List of (country, flag) tuples to draw from
+            card_pairs: List of (country, flag, country_code, flag_image_url) tuples to draw from
         """
         if size not in (4, 6, 8):
             raise ValueError("Grid size must be 4, 6, or 8")
@@ -88,11 +91,13 @@ class GameGrid:
         # Select and shuffle which pairs to use
         selected_pairs = random.sample(card_pairs, self.pairs_needed)
 
-        # Create cards (each pair appears twice)
+        # Create cards (each pair appears twice - one name, one flag)
         cards_list = []
-        for country, flag in selected_pairs:
-            cards_list.append(Card(country=country, flag=flag))
-            cards_list.append(Card(country=country, flag=flag))
+        for country, flag, country_code, flag_image_url in selected_pairs:
+            # One card shows country name
+            cards_list.append(Card(country=country, flag=flag, country_code=country_code, flag_image_url=flag_image_url, display_type='name'))
+            # Other card shows flag
+            cards_list.append(Card(country=country, flag=flag, country_code=country_code, flag_image_url=flag_image_url, display_type='flag'))
 
         # Shuffle and create grid
         random.shuffle(cards_list)
@@ -122,7 +127,7 @@ class Game:
     only exposes game rules, not implementation details.
     """
 
-    def __init__(self, size: int, card_pairs: List[Tuple[str, str]]):
+    def __init__(self, size: int, card_pairs: List[Tuple[str, str, str, str]]):
         """
         Initialize a new game.
 
@@ -257,13 +262,16 @@ class Game:
 
         Returns:
             "?" if hidden
-            Flag emoji if flipped/matched
+            Country name or flag emoji if flipped/matched
             Empty space if error
         """
         try:
             card = self.grid.get_card(row, col)
             if card.is_matched or card.is_flipped:
-                return card.flag
+                if card.display_type == 'name':
+                    return card.country
+                else:  # display_type == 'flag'
+                    return card.flag
             return "?"
         except InvalidMoveError:
             return " "
